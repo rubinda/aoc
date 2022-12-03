@@ -1,8 +1,8 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -13,16 +13,11 @@ type Elf struct {
 	caloriesCarrying int
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
+//go:embed challenge.in
+var input string
 
-func main() {
-	data, err := os.ReadFile("challenge.in")
-	check(err)
-	calories := strings.Split(string(data), "\n")
+func runChallenge(challengePart int) (int, []Elf) {
+	calories := strings.Split(input, "\n")
 	var elves []Elf
 	elfId := 0
 	elves = append(elves, Elf{id: elfId, caloriesCarrying: 0})
@@ -34,18 +29,28 @@ func main() {
 			continue
 		}
 		calories, err := strconv.Atoi(v)
-		check(err)
+		if err != nil {
+			panic(err)
+		}
 		elves[elfId].caloriesCarrying += calories
 	}
 	sort.Slice(elves, func(i, j int) bool {
 		return elves[i].caloriesCarrying > elves[j].caloriesCarrying
 	})
 
-	fmt.Println("Tope 3 elves carrying food are: ")
-	fmt.Println(elves[:3])
-	caloricSum := 0
-	for _, elf := range elves[:3] {
-		caloricSum += elf.caloriesCarrying
+	if challengePart == 1 {
+		return elves[0].caloriesCarrying, elves[:1]
+	} else {
+		total := 0
+		for _, v := range elves[:3] {
+			total += v.caloriesCarrying
+		}
+		return total, elves[:3]
 	}
-	fmt.Printf("Together they carry: %d\n", caloricSum)
+}
+
+func main() {
+	calories, elves := runChallenge(1)
+	fmt.Println(elves)
+	fmt.Printf("They carry %d calories\n ", calories)
 }
