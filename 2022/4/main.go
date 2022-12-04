@@ -16,18 +16,11 @@ type ElfCleaner struct {
 }
 
 func (a ElfCleaner) overlaps(b ElfCleaner) bool {
-	if a.sectionMax >= b.sectionMin && a.sectionMin <= b.sectionMin ||
-		a.sectionMin <= b.sectionMin && a.sectionMax >= b.sectionMax {
-		return true
-	}
-	return false
+	return !(a.sectionMax < b.sectionMin || b.sectionMax < a.sectionMin)
 }
 
 func (a ElfCleaner) fullyContains(b ElfCleaner) bool {
-	if a.sectionMin <= b.sectionMin && a.sectionMax >= b.sectionMax {
-		return true
-	}
-	return false
+	return a.sectionMin <= b.sectionMin && a.sectionMax >= b.sectionMax
 }
 
 func parseAssignments(assignmentDesc string) []ElfCleaner {
@@ -74,7 +67,7 @@ func runChallenge(challengePart int) int {
 		for i := range cleaners {
 			if challengePart == 1 && isFullyContained(cleaners, i) {
 				contained++
-				// If the cleaners have the same ranges it counts as 1 contain, not 2 ( 15-20,15-20 => 1 overlap not 2)
+				// If the cleaners have the same ranges it counts as 1 contain, not 2 (15-20,15-20 => 1 overlap not 2)
 				break
 			} else if challengePart == 2 && hasOverlap(cleaners, i) {
 				contained++
