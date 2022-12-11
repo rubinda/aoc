@@ -118,7 +118,6 @@ func SpotMonkey(monkeyDesc string) *Monkey {
 	default:
 		panic("Unexpected sign [" + opSign + "] for worry increase function")
 	}
-	// todo: also include "/ 3" or "% LCM" based on challengePart
 	monkey.worryIncrease = func(worryLevel int) int {
 		return mathOp(worryLevel, opConstant)
 	}
@@ -170,7 +169,6 @@ func ParseInput(inputDesc string) ([]*Monkey, []int) {
 // runChallenge returns the desired output for the days challenge.
 // May print additional information to stdout.
 func runChallenge(challengePart int) int {
-	result := -1
 	monkeys, divisors := ParseInput(input)
 	// Part 1 related
 	reduceFunc := func(worryLevel int) int {
@@ -195,8 +193,7 @@ func runChallenge(challengePart int) int {
 		}
 	}
 	sort.Slice(monkeys, func(i, j int) bool { return monkeys[i].itemsInspected > monkeys[j].itemsInspected })
-	result = monkeys[0].itemsInspected * monkeys[1].itemsInspected
-	return result
+	return monkeys[0].itemsInspected * monkeys[1].itemsInspected
 }
 
 func main() {
