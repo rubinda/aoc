@@ -11,13 +11,61 @@ import (
 //go:embed challenge.in
 var input string
 
+// check panics if error is not nil.
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+// add adds given integers.
 func add(a, b int) int {
 	return a + b
 }
+
+// multiply multiplies given integers.
 func multiply(a, b int) int {
 	return a * b
 }
 
+// pow raises a to the power of b.
+func pow(a, b int) int {
+	if b == 0 {
+		return 1
+	}
+	if b == 1 {
+		return a
+	}
+	y := pow(a, b/2)
+	if b%2 == 0 {
+		return y * y
+	}
+	return a * y * y
+}
+
+// gcd finds the greatest common divisor.
+func gcd(a, b int) int {
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// lcm finds the least common multiple.
+func lcm(n ...int) int {
+	if len(n) < 2 {
+		return n[0]
+	}
+	t := n[0] * n[1] / gcd(n[0], n[1])
+	for _, i := range n[2:] {
+		t = lcm(t, i)
+	}
+	return t
+}
+
+// Monkey holds items and can throw them to others based on his decision function.
 type Monkey struct {
 	id int
 	// items contains worry levels for each item held.
@@ -33,88 +81,70 @@ type Monkey struct {
 }
 
 // SpotMonkey parses a monkey desc into a monkey struct.
-//
-//	Monkey 1:
-//	Starting items: 54, 65, 75, 74
-//	Operation: new = old + 6
-//	Test: divisible by 19
-//	  If true: throw to monkey 2
-//	  If false: throw to monkey 0
 func SpotMonkey(monkeyDesc string) *Monkey {
+	// Use strings.NewReplacer and fmt.Sscanf
 	monkey := &Monkey{}
-	lines := strings.Split(monkeyDesc, "\n")
+	replacer := strings.NewReplacer(", ", ",", "* old", "^ 2")
+	var itemArr, opSign string
+	var opConstant, catcher1, catcher2 int
+	_, err := fmt.Sscanf(replacer.Replace(monkeyDesc),
+		`Monkey %d:
+		Starting items: %s
+		Operation: new = old %s %d
+		Test: divisible by %d
+		 If true: throw to monkey %d
+		 If false: throw to monkey %d`,
+		&monkey.id, &itemArr, &opSign, &opConstant, &monkey.throwDivisor, &catcher1, &catcher2,
+	)
+	check(err)
 
-	// id parsing
-	monkey.id, _ = strconv.Atoi(strings.ReplaceAll(strings.ReplaceAll(lines[0], "Monkey ", ""), ":", ""))
-	// Items parsing (csv into list of int)
-	items := strings.Split(strings.Split(lines[1], ":")[1], ",")
+	// Parse integers from string items
+	items := strings.Split(itemArr, ",")
 	monkey.items = make([]int, len(items))
-	var err error
-	for i := 0; i < len(items); i++ {
-		a, err := strconv.Atoi(strings.TrimSpace(items[i]))
-		monkey.items[i] = int(a)
-		if err != nil {
-			panic(err)
-		}
+	for i := range items {
+		monkey.items[i], err = strconv.Atoi(items[i])
+		check(err)
 	}
 
-	// throw recipient calculation
-	b, _ := strconv.Atoi(strings.Fields(lines[3])[3])
-	monkey.throwDivisor = int(b)
-	line4 := strings.Fields(lines[4])
-	line5 := strings.Fields(lines[5])
-	monkeyA, _ := strconv.Atoi(line4[len(line4)-1])
-	monkeyB, _ := strconv.Atoi(line5[len(line5)-1])
+	// Worry level increase after each inspection
+	var mathOp func(a, b int) int
+	switch opSign {
+	case "+":
+		mathOp = add
+	case "*":
+		mathOp = multiply
+	case "^":
+		mathOp = pow
+	default:
+		panic("Unexpected sign [" + opSign + "] for worry increase function")
+	}
+	// todo: also include "/ 3" or "% LCM" based on challengePart
+	monkey.worryIncrease = func(worryLevel int) int {
+		return mathOp(worryLevel, opConstant)
+	}
+
+	// Deciding function for which monkey to throw the item to (index)
 	monkey.throwRecipient = func(worryLevel int) int {
 		if worryLevel%monkey.throwDivisor == 0 {
-			return monkeyA
+			return catcher1
 		}
-		return monkeyB
-	}
-
-	// worry increase function
-	opDesc := strings.Fields(strings.Split(lines[2], "=")[1])
-	if len(opDesc) < 3 || opDesc[0] != "old" {
-		panic(fmt.Errorf("[Error] Error with worry increase operation (got %v) ", opDesc))
-	}
-	usesOldWorry := false
-	a, err := strconv.Atoi(opDesc[2])
-	increaseConstant := int(a)
-	if err != nil {
-		usesOldWorry = true
-	}
-	switch opDesc[1] {
-	case "+":
-		monkey.worryIncrease = func(oldWorry int) int {
-			if usesOldWorry {
-				return add(oldWorry, oldWorry)
-			}
-			return add(oldWorry, increaseConstant)
-		}
-	case "*":
-		monkey.worryIncrease = func(oldWorry int) int {
-			if usesOldWorry {
-				return multiply(oldWorry, oldWorry)
-			}
-			return multiply(oldWorry, increaseConstant)
-		}
-	default:
-		panic(fmt.Errorf("[Error] Worry increase function has different sign: [%s]", opDesc[1]))
+		return catcher2
 	}
 
 	return monkey
 }
 
 // InspectItem causes monkey to inspect the first item in its possesion increasing worry level for that item.
-func (m *Monkey) InspectItem() {
+// reducer keeps the worry level at normal levels.
+func (m *Monkey) InspectItem(reducer func(worryLevel int) int) {
 	if len(m.items) == 0 {
 		return
 	}
 	m.itemsInspected++
-	m.items[0] = m.worryIncrease(m.items[0]) % 9699690
+	m.items[0] = reducer(m.worryIncrease(m.items[0]))
 }
 
-// ThrowFirstItem throws monkeys first item possesed to given recipient
+// ThrowFirstItem throws monkey's first item possesed to given recipient.
 func (m *Monkey) ThrowFirstItem(recipient *Monkey) {
 	if len(m.items) == 0 {
 		return
@@ -124,45 +154,52 @@ func (m *Monkey) ThrowFirstItem(recipient *Monkey) {
 	recipient.items = append(recipient.items, throwedItem)
 }
 
-func ParseInput(inputDesc string) []*Monkey {
+// ParseInput takes an input string (monkey description) and converts it to objects.
+func ParseInput(inputDesc string) ([]*Monkey, []int) {
 	descriptions := strings.Split(input, "\n\n")
 	monkeys := make([]*Monkey, len(descriptions))
-
+	divisors := make([]int, len(descriptions))
 	for _, desc := range descriptions {
 		monkey := SpotMonkey(desc)
 		monkeys[monkey.id] = monkey
+		divisors[monkey.id] = monkey.throwDivisor
 	}
-	return monkeys
+	return monkeys, divisors
 }
 
+// runChallenge returns the desired output for the days challenge.
+// May print additional information to stdout.
 func runChallenge(challengePart int) int {
 	result := -1
-	monkeys := ParseInput(input)
-	rounds := 10000
+	monkeys, divisors := ParseInput(input)
+	// Part 1 related
+	reduceFunc := func(worryLevel int) int {
+		return worryLevel / 3
+	}
+	rounds := 20
+	if challengePart == 2 {
+		monkeyLCM := lcm(divisors...)
+		reduceFunc = func(worryLevel int) int {
+			return worryLevel % monkeyLCM
+		}
+		rounds = 10000
+	}
+
 	for i := 0; i < rounds; i++ {
-		fmt.Printf(">>>>>>> ROUND %d <<<<<<<\n", i)
 		for _, monkey := range monkeys {
-			fmt.Printf("====== Monkey %d ======\n", monkey.id)
 			for range monkey.items {
-				fmt.Printf("  worry change: %d ->", monkey.items[0])
-				monkey.InspectItem()
-				fmt.Printf("%d\n", monkey.items[0])
-				fmt.Printf("  Throwing [%d] to [Monkey %d]\n", monkey.items[0], monkey.throwRecipient(monkey.items[0]))
+				monkey.InspectItem(reduceFunc)
 				recipient := monkeys[monkey.throwRecipient(monkey.items[0])]
 				monkey.ThrowFirstItem(recipient)
 			}
-
 		}
 	}
-
 	sort.Slice(monkeys, func(i, j int) bool { return monkeys[i].itemsInspected > monkeys[j].itemsInspected })
-	for _, m := range monkeys {
-		fmt.Printf("[Monkey %d] \n  Inspections: %d \n", m.id, m.itemsInspected)
-	}
 	result = monkeys[0].itemsInspected * monkeys[1].itemsInspected
 	return result
 }
 
 func main() {
-	fmt.Println(runChallenge(1))
+	fmt.Printf("==== Part 1 ==== \n%d\n", runChallenge(1))
+	fmt.Printf("==== Part 2 ==== \n%d\n", runChallenge(2))
 }
