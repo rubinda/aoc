@@ -111,7 +111,7 @@ func ShortestPath(source *Node, sink *Node, g *Graph) (map[*Node]*Node, int, map
 	return prev, dist[sink], dist
 }
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 // parseInput reads the input string and returns DEM-like grid.

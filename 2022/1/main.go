@@ -13,7 +13,7 @@ type Elf struct {
 	caloriesCarrying int
 }
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 func runChallenge(challengePart int) (int, []Elf) {

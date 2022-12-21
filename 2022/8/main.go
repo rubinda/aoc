@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 // markCondition is used when printing the forest to mark certain trees
@@ -244,15 +244,15 @@ func runChallenge(challengePart int) int {
 	if challengePart == 1 {
 		forest.MarkVisibleTrees()
 		result = len(forest.visibleTrees)
-		forest.PrintMarkedTrees(func(t *Tree) bool {
-			return t.isVisible
-		})
+		// forest.PrintMarkedTrees(func(t *Tree) bool {
+		// 	return t.isVisible
+		// })
 		fmt.Println("Number of visible trees", len(forest.visibleTrees))
 	} else if challengePart == 2 {
 		forest.calculateScenicScores()
-		forest.PrintMarkedTrees(func(t *Tree) bool {
-			return t.x == forest.mostScenic.x && t.y == forest.mostScenic.y
-		})
+		// forest.PrintMarkedTrees(func(t *Tree) bool {
+		// 	return t.x == forest.mostScenic.x && t.y == forest.mostScenic.y
+		// })
 		fmt.Println("Most scenic tree has a score of ", forest.mostScenic.scenicScore)
 		return forest.mostScenic.scenicScore
 	}

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 // check panics if error is not nil.

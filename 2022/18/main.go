@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	//go:embed challenge.in
+	//go:embed example.in
 	input string
 	// Represents relative directions to neighbours in 3D space (6 degrees of freedom).
 	neighbours6DOF = []Voxel{

@@ -2,8 +2,8 @@ package main
 
 import "testing"
 
-const expected1 = 1782
-const expected2 = 474606
+const expected1 = 21
+const expected2 = 8
 
 func TestChallenge1(t *testing.T) {
 	actual := runChallenge(1)
@@ -18,5 +18,16 @@ func TestChallenge2(t *testing.T) {
 
 	if actual != expected2 {
 		t.Errorf("Wrong result! Expected: %v, actual: %v", expected2, actual)
+	}
+}
+
+func Benchmark1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		runChallenge(1)
+	}
+}
+func Benchmark2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		runChallenge(2)
 	}
 }

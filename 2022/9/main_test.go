@@ -3,8 +3,8 @@ package main
 import "testing"
 
 const (
-	expected1 = 6018
-	expected2 = 2619
+	expected1 = 88
+	expected2 = 36
 )
 
 func TestChallenge1(t *testing.T) {
@@ -23,7 +23,12 @@ func TestChallenge2(t *testing.T) {
 	}
 }
 
-func BenchmarkChallenge(b *testing.B) {
+func Benchmark1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		runChallenge(1)
+	}
+}
+func Benchmark2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		runChallenge(2)
 	}

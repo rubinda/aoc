@@ -50,7 +50,7 @@ const moveOutcome = (move) => {
     : outcomeValues.loss;
 };
 
-fs.readFile("challenge.in", "utf8", (err, data) => {
+fs.readFile("example.in", "utf8", (err, data) => {
   if (err) {
     console.error(err);
     return;

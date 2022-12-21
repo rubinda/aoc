@@ -9,7 +9,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 const (
@@ -50,7 +50,6 @@ func challenge1() int {
 				compartment2[item]++
 			}
 		}
-		fmt.Println(compartment1)
 		for item, _ := range compartment1 {
 			if _, ok := compartment2[item]; ok {
 				commonItems = append(commonItems, item)
@@ -79,7 +78,7 @@ func challenge2() int {
 			elfGroups[groupNum][item]++
 		}
 		smallestRucksack := findSmallestRucksack(elfGroups)
-		for item, _ := range elfGroups[smallestRucksack] {
+		for item := range elfGroups[smallestRucksack] {
 			allContain := true
 			for g := 0; g < elvesInGroup; g++ {
 				if g == smallestRucksack {

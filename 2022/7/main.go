@@ -21,7 +21,7 @@ const (
 	neededSpace int = 30000000
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 // INode represents a node in the filesystem. Depending on nodeType some properties can be omitted
@@ -160,9 +160,9 @@ func runChallenge(challengePart int) int {
 		matches := root.FindDirs(func(n *INode) bool {
 			return n.nodeType == dirType && n.size <= 100000
 		})
-		fmt.Printf("Found %d directories that match: \n", len(matches))
+		// fmt.Printf("Found %d directories that match: \n", len(matches))
 		for _, m := range matches {
-			fmt.Printf("%10d %s \n", m.size, m.name)
+			// fmt.Printf("%10d %s \n", m.size, m.name)
 			result += m.size
 		}
 		return result
@@ -174,11 +174,11 @@ func runChallenge(challengePart int) int {
 			matches := root.FindDirs(func(n *INode) bool {
 				return n.nodeType == dirType && n.size >= minimumSize
 			})
-			fmt.Printf("Found %d directories that match: \n", len(matches))
+			// fmt.Printf("Found %d directories that match: \n", len(matches))
 			// Find smallest directory that is > minimumSize
 			smallest := -1
 			for _, d := range matches {
-				fmt.Printf("%10d %s \n", d.size, d.name)
+				// fmt.Printf("%10d %s \n", d.size, d.name)
 				if d.size > minimumSize && (smallest < 0 || d.size < smallest) {
 					smallest = d.size
 				}

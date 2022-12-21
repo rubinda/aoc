@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	//go:embed challenge.in
+	//go:embed example.in
 	input string
 	// pieceMaterial helps visualizing output
 	pieceMaterial = []string{"-", "+", "J", "I", "B"}
@@ -293,7 +293,7 @@ func runChallenge(challengePart int) int {
 			periodic = append([]int{heightGains[i]}, periodic...)
 			i--
 		}
-		fmt.Println("Found periodic growth: ", len(periodic))
+		// fmt.Println("Found periodic growth: ", len(periodic))
 
 		// Find offset
 		periodOffset := -1
@@ -308,11 +308,11 @@ func runChallenge(challengePart int) int {
 				}
 			}
 		}
-		fmt.Println("Found offset for periodic growth: ", periodOffset)
+		// fmt.Println("Found offset for periodic growth: ", periodOffset)
 		periodicRuns := (challenge2Runs - periodOffset) / len(periodic)
 		lastPeriodRemainder := (challenge2Runs - periodOffset) - (periodicRuns * len(periodic))
 
-		fmt.Printf("Need to do %d offset runs, then %d to get period (times %d) and finally add %d of last period \n", periodOffset, len(periodic), periodicRuns, lastPeriodRemainder)
+		// fmt.Printf("Need to do %d offset runs, then %d to get period (times %d) and finally add %d of last period \n", periodOffset, len(periodic), periodicRuns, lastPeriodRemainder)
 		chamber := NewChamber(input)
 		offsetHeight := 0
 		periodicGrowth := 0

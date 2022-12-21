@@ -13,7 +13,7 @@ const (
 	crateMoveNumbers  = `[0-9]+`
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 type Stack []string
@@ -80,7 +80,7 @@ func parseInput(crateDesc string) (*CargoShip, []MoveInstruction) {
 	moves := make([]MoveInstruction, 0)
 	moveSplitter := regexp.MustCompile(crateMoveNumbers)
 	for i, line := range lines {
-		fmt.Println(line)
+		//fmt.Println(line)
 		if line == "" {
 			crateSectionEnd = i - 2 // Naming is trivial so ignore the number line
 			numStacks = len(strings.Fields(lines[i-1]))

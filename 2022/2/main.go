@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 type ChallengeMode int64

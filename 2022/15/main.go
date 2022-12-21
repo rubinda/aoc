@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	//go:embed challenge.in
+	//go:embed example.in
 	input string
 )
 
@@ -24,9 +24,9 @@ var (
 
 // Challenge constants (can differ from example and challenge)
 const (
-	challenge1Y               = 2000000
+	challenge1Y               = 10 // 2000000
 	challenge2SearchMin       = 0
-	challenge2SearchMax       = 4000000
+	challenge2SearchMax       = 20 // 4000000
 	tuningFrequencyMultiplier = 4000000
 )
 
@@ -168,7 +168,7 @@ func runChallenge(challengePart int) int {
 				noCoverage++
 			}
 		}
-		fmt.Printf("=== Depth %d ===\nNo coverage: %d \n  No beacon: %d \n   Occupied: %d\n", challenge1Y, noCoverage, definitelyBeaconless, occuppied)
+		// fmt.Printf("=== Depth %d ===\nNo coverage: %d \n  No beacon: %d \n   Occupied: %d\n", challenge1Y, noCoverage, definitelyBeaconless, occuppied)
 		return definitelyBeaconless
 	} else if challengePart == 2 {
 		covered := 0
@@ -204,7 +204,7 @@ func runChallenge(challengePart int) int {
 					if !hasCoverage {
 						// Point has no coverage! since challenge requires only one such point the search is done
 						frequency := perimeterPoint.x*tuningFrequencyMultiplier + perimeterPoint.y
-						fmt.Printf("  Covered: %d \n Occupied: %d\n", covered, occuppied)
+						// fmt.Printf("  Covered: %d \n Occupied: %d\n", covered, occuppied)
 						return frequency
 					} else {
 						covered++

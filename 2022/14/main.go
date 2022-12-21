@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	//go:embed challenge.in
+	//go:embed example.in
 	input string
 
 	// SandSource is the point where sand starts flowing in. NEEDS OFFSET!
@@ -242,7 +242,7 @@ func runChallenge(challengePart int) int {
 		cornsSpawned++
 		canSpawnMore = sandbox.SpawnGrainOfSand()
 	}
-	fmt.Println(sandbox.Output())
+	// fmt.Println(sandbox.Output())
 	if challengePart == 2 {
 		// I like the idea that sand source stays where it originally was, but challenge wants it to change into sand.
 		// So add 1 to get proper result.

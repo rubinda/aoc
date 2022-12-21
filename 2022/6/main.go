@@ -10,7 +10,7 @@ const (
 	messageMarkerLen = 14
 )
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 func isUniqueChars(str string) bool {
@@ -37,7 +37,7 @@ func runChallenge(challengePart int) int {
 		}
 		buffer := input[i : i+bufferLen]
 		if isUniqueChars(buffer) {
-			fmt.Printf("'%s' @ {%d:%d} is unique \n", buffer, i, i+bufferLen)
+			// fmt.Printf("'%s' @ {%d:%d} is unique \n", buffer, i, i+bufferLen)
 			// Return the number of characters processed
 			return i + bufferLen
 		}

@@ -118,7 +118,7 @@ func Compare(packet1, packet2 string) int {
 	return GreaterThan
 }
 
-//go:embed challenge.in
+//go:embed example.in
 var input string
 
 // runChallenge returns the desired output for the day's challenge.

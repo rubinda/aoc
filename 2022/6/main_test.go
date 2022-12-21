@@ -2,8 +2,8 @@ package main
 
 import "testing"
 
-const expected1 = 1480
-const expected2 = 2746
+const expected1 = 11
+const expected2 = 26
 
 func TestChallenge1(t *testing.T) {
 	actual := runChallenge(1)
@@ -26,5 +26,11 @@ var benchmarkString = "abcdefghijklmnopqrstuvwxyza"
 func BenchmarkIsUniqueChars(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		isUniqueChars(benchmarkString)
+	}
+}
+
+func Benchmark2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		runChallenge(2)
 	}
 }

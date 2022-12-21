@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	//go:embed challenge.in
+	//go:embed example.in
 	input string
 )
 

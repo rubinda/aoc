@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-//go:embed challenge.in
+//go:embed example2.in
 var input string
 
 // sign returns the integer sign of a number.
